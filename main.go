@@ -50,7 +50,7 @@ func main() {
 	fmt.Println(string(cpuinfo), string(meminfo))
 	cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 
-	cpuUser, err := strconv.Atoi(cpuSlice[0][1])
+	cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
 	if err != nil {
 		log.Panic(err)
 	}
