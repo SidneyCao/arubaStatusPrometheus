@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/melbahja/goph"
@@ -27,7 +28,11 @@ func main() {
 
 	defer client.Close()
 
-	res, err := client.Run("show cpuinfo")
+	out, err := client.Run("show cpuinfo")
+	if err != nil {
+		log.Panic(err)
+	}
+	res, err := ioutil.ReadAll(out)
 	if err != nil {
 		log.Panic(err)
 	}
