@@ -12,7 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var num = regexp.MustCompile("[0-9]")
+var cpuValid = regexp.MustCompile("[a-z]+(.*?)%")
 
 //定义命令行参数
 var (
