@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/melbahja/goph"
 	"github.com/prometheus/client_golang/prometheus"
@@ -42,33 +43,37 @@ func main() {
 	//获取命令行参数
 	flag.Parse()
 
-	//登陆aruba交换机
-	cpuinfo, meminfo, err := sshTo(*user, *password, *host)
-	if err != nil {
-		log.Panic(err)
-	}
-	fmt.Println(string(cpuinfo), string(meminfo))
-	cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
+	go func() {
+		for {
+			//登陆aruba交换机
+			cpuinfo, meminfo, err := sshTo(*user, *password, *host)
+			if err != nil {
+				log.Panic(err)
+			}
+			fmt.Println(string(meminfo))
+			cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 
-	cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
-	if err != nil {
-		log.Panic(err)
-	}
+			cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
+			if err != nil {
+				log.Panic(err)
+			}
 
-	cpuSystem, err := strconv.ParseFloat(cpuSlice[1][1], 64)
-	if err != nil {
-		log.Panic(err)
-	}
+			cpuSystem, err := strconv.ParseFloat(cpuSlice[1][1], 64)
+			if err != nil {
+				log.Panic(err)
+			}
 
-	cpuIdle, err := strconv.ParseFloat(cpuSlice[2][1], 64)
-	if err != nil {
-		log.Panic(err)
-	}
+			cpuIdle, err := strconv.ParseFloat(cpuSlice[2][1], 64)
+			if err != nil {
+				log.Panic(err)
+			}
 
-	fmt.Println(cpuUser)
-	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(cpuUser)
-	cpuLoad.With(prometheus.Labels{"type": "system"}).Set(cpuSystem)
-	cpuLoad.With(prometheus.Labels{"type": "idle"}).Set(cpuIdle)
+			cpuLoad.With(prometheus.Labels{"type": "user"}).Set(cpuUser)
+			cpuLoad.With(prometheus.Labels{"type": "system"}).Set(cpuSystem)
+			cpuLoad.With(prometheus.Labels{"type": "idle"}).Set(cpuIdle)
+			time.Sleep(10 * time.Second)
+		}
+	}()
 
 	http.Handle("/metrics", promhttp.Handler())
 	log.Panic(http.ListenAndServe(*httpPort, nil))
