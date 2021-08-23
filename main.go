@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/melbahja/goph"
 	"github.com/prometheus/client_golang/prometheus"
@@ -47,10 +48,13 @@ func main() {
 		log.Panic(err)
 	}
 	fmt.Println(string(cpuinfo), string(meminfo))
-	cupUsr := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
-	fmt.Println(cupUsr)
+	cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 
-	cpuLoad.With(prometheus.Labels{"type": "usr"}).Set(12)
+	cpuUser, err := strconv.Atoi(cpuSlice[0][1])
+	if err != nil {
+		log.Panic(err)
+	}
+	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(float64(cpuUser))
 
 	http.Handle("/metrics", promhttp.Handler())
 	log.Panic(http.ListenAndServe(*httpPort, nil))
