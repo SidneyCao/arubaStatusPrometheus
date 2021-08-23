@@ -47,7 +47,7 @@ func main() {
 		log.Panic(err)
 	}
 	fmt.Println(string(cpuinfo), string(meminfo))
-	cupUsr := cpuValid.FindStringSubmatch(cpuinfo)
+	cupUsr := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 	fmt.Println(cupUsr)
 
 	cpuLoad.With(prometheus.Labels{"type": "usr"}).Set(12)
