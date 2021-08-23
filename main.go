@@ -21,10 +21,13 @@ var (
 
 //定义Prometheus Metric
 var (
-	cpuLoad = prometheus.NewGauge(prometheus.GaugeOpts{
-		Name: "cpuloadCollectedByGO",
-		Help: "Current CPU Load collected by prometheus go client",
-	})
+	cpuLoad = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "cpuloadCollectedByGO",
+			Help: "Current CPU Load collected by prometheus go client",
+		},
+		[]string{"type"},
+	)
 )
 
 func init() {
@@ -43,7 +46,8 @@ func main() {
 
 	fmt.Println(string(cpuinfo), string(meminfo))
 
-	cpuLoad.Set(99)
+	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(12)
+
 	http.Handle("/metrics", promhttp.Handler())
 	log.Panic(http.ListenAndServe(*httpPort, nil))
 
