@@ -27,7 +27,7 @@ func main() {
 
 	defer client.Close()
 
-	cpuinfo, err := client.Run("show cpuinfo")
+	cpuinfo, err := client.Run("show cpuload")
 	if err != nil {
 		log.Panic(err)
 	}
