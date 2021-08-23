@@ -15,6 +15,7 @@ import (
 )
 
 var cpuValid = regexp.MustCompile(`[a-z]+\s*(.*?)%`)
+var memValid = regexp.MustCompile(`.*:\s*([0-9]*?),*`)
 
 //定义命令行参
 var (
@@ -52,6 +53,9 @@ func main() {
 			}
 			fmt.Println(string(meminfo))
 			cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
+			memSlice := memValid.FindAllStringSubmatch(meminfo, -1)
+
+			fmt.Println(memSlice)
 
 			cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
 			if err != nil {
