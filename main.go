@@ -54,8 +54,21 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+
+	cpuSystem, err := strconv.ParseFloat(cpuSlice[1][1], 64)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	cpuIdle, err := strconv.ParseFloat(cpuSlice[2][1], 64)
+	if err != nil {
+		log.Panic(err)
+	}
+
 	fmt.Println(cpuUser)
-	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(float64(cpuUser))
+	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(cpuUser)
+	cpuLoad.With(prometheus.Labels{"type": "system"}).Set(cpuSystem)
+	cpuLoad.With(prometheus.Labels{"type": "idle"}).Set(cpuIdle)
 
 	http.Handle("/metrics", promhttp.Handler())
 	log.Panic(http.ListenAndServe(*httpPort, nil))
