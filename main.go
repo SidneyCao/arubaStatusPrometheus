@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/melbahja/goph"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
+
+var num = regexp.MustCompile("[0-9]")
 
 //定义命令行参数
 var (
@@ -43,10 +46,10 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-
 	fmt.Println(string(cpuinfo), string(meminfo))
-
-	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(12)
+	cupUsr := num.FindAllSubmatch([]byte(cpuinfo), -1)
+	fmt.Println(cupUsr)
+	cpuLoad.With(prometheus.Labels{"type": "usr"}).Set(12)
 
 	http.Handle("/metrics", promhttp.Handler())
 	log.Panic(http.ListenAndServe(*httpPort, nil))
