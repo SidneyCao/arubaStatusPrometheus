@@ -36,6 +36,6 @@ func main() {
 		log.Panic(err)
 	}
 
-	fmt.Println(string(cpuinfo), ",", string(meminfo))
+	fmt.Println(string(cpuinfo), string(meminfo))
 
 }
