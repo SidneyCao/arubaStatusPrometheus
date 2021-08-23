@@ -98,7 +98,7 @@ func main() {
 			}
 			memUsage.With(prometheus.Labels{"type": "total"}).Set(memTotal)
 			memUsage.With(prometheus.Labels{"type": "used"}).Set(memUsed)
-			memFree.With(prometheus.Labels{"type": "free"}).Set(memFree)
+			memUsage.With(prometheus.Labels{"type": "free"}).Set(memFree)
 
 			time.Sleep(10 * time.Second)
 		}
