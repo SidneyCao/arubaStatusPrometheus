@@ -1,1 +1,2 @@
 # arubaStatusPrometheus
+一个小工具，用于将aruba交换机的系统信息输出成Prometheus node的格式
