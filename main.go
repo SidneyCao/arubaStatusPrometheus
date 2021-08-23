@@ -54,6 +54,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	fmt.Println(cpuUser)
 	cpuLoad.With(prometheus.Labels{"type": "user"}).Set(float64(cpuUser))
 
 	http.Handle("/metrics", promhttp.Handler())
