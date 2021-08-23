@@ -15,5 +15,5 @@ func main() {
 	flag.IntVar(&httpPort, "P", 9100, "port 默认为9100")
 
 	flag.Parse()
-	fmt.Print(host, ',', user, ',', password, ',', httpPort)
+	fmt.Print(host, ",", user, ",", password, ",", httpPort)
 }
