@@ -13,9 +13,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-var cpuValid = regexp.MustCompile("[a-z]+(.*?)%")
+var cpuValid = regexp.MustCompile(`[a-z]+\s*(.*?)%`)
 
-//定义命令行参数
+//定义命令行参
 var (
 	host     = flag.String("h", "", "host 默认为空")
 	user     = flag.String("u", "root", "user 默认为root")
