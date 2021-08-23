@@ -15,7 +15,7 @@ import (
 )
 
 var cpuValid = regexp.MustCompile(`[a-z]+\s*(.*?)%`)
-var memValid = regexp.MustCompile(`:\s*([0-9]+?),*`)
+var memValid = regexp.MustCompile(`:\s*([0-9]+?)`)
 
 //定义命令行参
 var (
