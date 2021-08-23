@@ -31,7 +31,11 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
+	meminfo, err := client.Run("show memory")
+	if err != nil {
+		log.Panic(err)
+	}
 
-	fmt.Println(string(cpuinfo))
+	fmt.Println(string(cpuinfo), ",", string(meminfo))
 
 }
