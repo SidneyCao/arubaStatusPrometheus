@@ -34,10 +34,18 @@ var (
 		},
 		[]string{"type"},
 	)
+	memUsage = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Name: "memUsageCollectedByGO",
+			Help: "Current memory usage collected by prometheus go client",
+		},
+		[]string{"type"},
+	)
 )
 
 func init() {
 	prometheus.MustRegister(cpuLoad)
+	prometheus.MustRegister(memUsage)
 }
 
 func main() {
@@ -51,12 +59,10 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
-			fmt.Println(string(meminfo))
+			fmt.Println(string(cpuinfo), string(meminfo))
 			cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 			memSlice := memValid.FindAllString(meminfo, -1)
-
-			fmt.Println(memSlice)
-
+			fmt.Println(cpuSlice, memSlice)
 			cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
 			if err != nil {
 				log.Panic(err)
@@ -75,6 +81,25 @@ func main() {
 			cpuLoad.With(prometheus.Labels{"type": "user"}).Set(cpuUser)
 			cpuLoad.With(prometheus.Labels{"type": "system"}).Set(cpuSystem)
 			cpuLoad.With(prometheus.Labels{"type": "idle"}).Set(cpuIdle)
+
+			memTotal, err := strconv.ParseFloat(memSlice[0], 64)
+			if err != nil {
+				log.Panic(err)
+			}
+
+			memUsed, err := strconv.ParseFloat(memSlice[1], 64)
+			if err != nil {
+				log.Panic(err)
+			}
+
+			memFree, err := strconv.ParseFloat(memSlice[2], 64)
+			if err != nil {
+				log.Panic(err)
+			}
+			memUsage.With(prometheus.Labels{"type": "total"}).Set(memTotal)
+			memUsage.With(prometheus.Labels{"type": "used"}).Set(memUsed)
+			memFree.With(prometheus.Labels{"type": "free"}).Set(memFree)
+
 			time.Sleep(10 * time.Second)
 		}
 	}()
