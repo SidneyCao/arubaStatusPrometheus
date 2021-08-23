@@ -21,22 +21,30 @@ func main() {
 	flag.Parse()
 
 	//登陆aruba交换机
-	client, err := goph.New(*user, *host, goph.Password(*password))
-	if err != nil {
-		log.Panic(err)
-	}
-
-	defer client.Close()
-
-	cpuinfo, err := client.Run("show cpuload")
-	if err != nil {
-		log.Panic(err)
-	}
-	meminfo, err := client.Run("show memory")
+	cpuinfo, meminfo, err := sshTo(*user, *password, *host)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	fmt.Println(string(cpuinfo), string(meminfo))
 
+}
+
+func sshTo(user string, password string, host string) (string, string, error) {
+	client, err := goph.New(user, host, goph.Password(password))
+	if err != nil {
+		return "", "", err
+	}
+
+	defer client.Close()
+
+	cpuinfo, err := client.Run("show cpuload")
+	if err != nil {
+		return "", "", err
+	}
+	meminfo, err := client.Run("show memory")
+	if err != nil {
+		return string(cpuinfo), "", err
+	}
+	return string(cpuinfo), string(meminfo), nil
 }
