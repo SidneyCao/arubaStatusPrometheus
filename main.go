@@ -47,8 +47,9 @@ func main() {
 		log.Panic(err)
 	}
 	fmt.Println(string(cpuinfo), string(meminfo))
-	cupUsr := num.FindAllSubmatch([]byte(cpuinfo), -1)
+	cupUsr := num.FindStringSubmatch(cpuinfo)
 	fmt.Println(cupUsr)
+
 	cpuLoad.With(prometheus.Labels{"type": "usr"}).Set(12)
 
 	http.Handle("/metrics", promhttp.Handler())
