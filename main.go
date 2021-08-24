@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -58,10 +59,11 @@ func main() {
 			if err != nil {
 				log.Panic(err)
 			}
-			//fmt.Println(string(cpuinfo), string(meminfo))
+			fmt.Println(time.Now())
+			fmt.Println(string(cpuinfo), string(meminfo))
 			cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 			memSlice := memValid.FindAllString(meminfo, -1)
-			//fmt.Println(cpuSlice, memSlice)
+			fmt.Println(cpuSlice, memSlice)
 			cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
 			if err != nil {
 				log.Panic(err)
