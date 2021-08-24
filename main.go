@@ -63,7 +63,9 @@ func main() {
 			fmt.Println(string(cpuinfo), string(meminfo))
 			cpuSlice := cpuValid.FindAllStringSubmatch(cpuinfo, -1)
 			memSlice := memValid.FindAllString(meminfo, -1)
-			fmt.Println(cpuSlice, memSlice, "/n/n")
+			fmt.Println(cpuSlice, memSlice)
+			fmt.Println()
+			fmt.Println()
 			cpuUser, err := strconv.ParseFloat(cpuSlice[0][1], 64)
 			if err != nil {
 				log.Panic(err)
